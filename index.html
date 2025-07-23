@@ -1,0 +1,56 @@
+<script>
+  // Target dropdown and the hidden "Other" input
+  const pickupSelect = document.getElementById("pickup");
+  const customPickupInput = document.getElementById("customPickup");
+
+  // Show/hide "Other" input when dropdown changes
+  pickupSelect.addEventListener("change", function () {
+    if (pickupSelect.value === "Other") {
+      customPickupInput.style.display = "block";
+      customPickupInput.required = true;
+    } else {
+      customPickupInput.style.display = "none";
+      customPickupInput.required = false;
+    }
+  });
+
+  // Main form submission logic
+  document.getElementById("bookingForm").addEventListener("submit", function (e) {
+    e.preventDefault(); // Prevent default form behavior
+
+    // Get pickup value from dropdown or "Other" input
+    let pickup = pickupSelect.value;
+    if (pickup === "Other") {
+      pickup = customPickupInput.value.trim();
+      if (!pickup) {
+        alert("Please enter a custom pickup location.");
+        return;
+      }
+    }
+
+    // Get all other input values
+    const drop = document.getElementById("drop").value.trim();
+    const date = document.getElementById("date").value;
+    const time = document.getElementById("time").value;
+    const persons = document.getElementById("persons").value;
+    const referred = document.getElementById("referred").value.trim();
+    const contact = document.getElementById("contact").value.trim();
+
+    // Build the WhatsApp message
+    const message = `🚕 *Taxi Booking Request* 🚕%0A*Pickup:* ${pickup}%0A*Drop:* ${drop}%0A*Date:* ${date}%0A*Time:* ${time}%0A*No. of Persons:* ${persons}%0A*Referred By:* ${referred || 'N/A'}%0A*Contact:* ${contact}`;
+
+    // Conditionally route to different WhatsApp numbers
+    let phoneNumber;
+    if (pickup === "Greenroof Homestay") {
+      phoneNumber = "918918843345"; // Alt number
+    } else {
+      phoneNumber = "918207219672"; // Default number
+    }
+
+    // Build WhatsApp link
+    const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+    // Open WhatsApp chat
+    window.open(whatsappURL, "_blank");
+  });
+</script>
